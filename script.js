@@ -21,14 +21,12 @@ window.addEventListener("DOMContentLoaded", function () {
             if (remainingTime <= 0) {
                 clearInterval(timerId);
                 countDown.textContent = "Countdown Finished";
-                endTime.textContent =
-                    "End Time: " + format12Hour(new Date(endTimeValue));
+                endTime.textContent = format12Hour(new Date(endTimeValue));
                 return;
             }
 
             countDown.textContent = "Remaining Time: " + formatTime(remainingTime);
-            endTime.textContent =
-                "End Time: " + format12Hour(new Date(endTimeValue));
+            endTime.textContent = format12Hour(new Date(endTimeValue));
         }
 
         function format12Hour(date) {
