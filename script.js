@@ -22,20 +22,27 @@ window.addEventListener("DOMContentLoaded", function () {
                 clearInterval(timerId);
                 countDown.textContent = "Countdown Finished";
                 endTime.textContent =
-                    "End Time: " +
-                    new Date(endTimeValue).getHours() +
-                    ":" +
-                    new Date(endTimeValue).getMinutes();
+                    "End Time: " + format12Hour(new Date(endTimeValue));
                 return;
             }
 
             countDown.textContent = "Remaining Time: " + formatTime(remainingTime);
             endTime.textContent =
-                "End Time: " +
-                new Date(endTimeValue).getHours() +
-                ":" +
-                new Date(endTimeValue).getMinutes();
+                "End Time: " + format12Hour(new Date(endTimeValue));
         }
+
+        function format12Hour(date) {
+            var hours = date.getHours();
+            var minutes = date.getMinutes();
+            var period = hours >= 12 ? "PM" : "AM";
+
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+
+            return hours + ":" + minutes + " " + period;
+        }
+
     }
 
     function formatTime(time) {
