@@ -1,44 +1,72 @@
-const userInput = document.getElementById('userInput');
-const startButton = document.querySelector('button');
-const countDownElement = document.getElementById('countDown');
-const endTimeElement = document.getElementById('endTime');
+window.addEventListener("DOMContentLoaded", function () {
+    const userInput = document.getElementById("userInput");
+    const startButton = document.querySelector(".timer button");
+    const countDown = document.getElementById("countDown");
+    const endTime = document.getElementById("endTime");
 
-let countdown; // Variable to store the countdown interval
+    let timerId;
 
-function startCountdown() {
-    const seconds = parseInt(userInput.value); // Get the countdown time from the input field
+    function startTimer(duration) {
+        const startTime = new Date().getTime();
+        const endTimeValue = new Date().getTime() + duration * 60 * 1000;
 
-    // Check if the input is a valid number
-    if (Number.isNaN(seconds)) {
-        alert('Please enter a valid number!');
-        return;
+        updateTimer();
+
+        timerId = setInterval(updateTimer, 1000);
+
+        function updateTimer() {
+            const currentTime = new Date().getTime();
+            const remainingTime = endTimeValue - currentTime;
+
+            if (remainingTime <= 0) {
+                clearInterval(timerId);
+                countDown.textContent = "Countdown Finished";
+                endTime.textContent =
+                    "End Time: " +
+                    new Date(endTimeValue).getHours() +
+                    ":" +
+                    new Date(endTimeValue).getMinutes();
+                return;
+            }
+
+            countDown.textContent = "Remaining Time: " + formatTime(remainingTime);
+            endTime.textContent =
+                "End Time: " +
+                new Date(endTimeValue).getHours() +
+                ":" +
+                new Date(endTimeValue).getMinutes();
+        }
     }
 
-    // Calculate the end time
-    const currentTime = Date.now();
-    const endTime = currentTime + seconds * 1000;
+    function formatTime(time) {
+        const minutes = Math.floor((time % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((time % (1000 * 60)) / 1000);
 
-    // Update the UI with the end time
-    endTimeElement.textContent = new Date(endTime).toLocaleTimeString();
+        return (
+            (minutes < 10 ? "0" : "") +
+            minutes +
+            ":" +
+            (seconds < 10 ? "0" : "") +
+            seconds
+        );
+    }
 
-    // Clear any existing countdown interval
-    clearInterval(countdown);
-
-    // Start the countdown interval
-    countdown = setInterval(() => {
-        const secondsLeft = Math.round((endTime - Date.now()) / 1000);
-
-        // Check if the countdown is finished
-        if (secondsLeft < 0) {
-            clearInterval(countdown);
-            countDownElement.textContent = 'Countdown Finished!';
-            return;
+    startButton.addEventListener("click", function () {
+        const duration = parseInt(userInput.value);
+        if (!isNaN(duration)) {
+            startTimer(duration);
         }
+    });
 
-        // Update the UI with the remaining time
-        countDownElement.textContent = secondsLeft;
-    }, 1000);
-}
+    userInput.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+            const duration = parseInt(userInput.value);
+            if (!isNaN(duration)) {
+                startTimer(duration);
+            }
+        }
+    });
 
-// Add click event listener to the start button
-startButton.addEventListener('click', startCountdown);
+    // Timer for default options
+    startTimer(10);
+});
